@@ -12,7 +12,9 @@ namespace AuthWebApi.Services
     {
         private static Dictionary<string, string> sessions = new Dictionary<string, string>();
 
-        public Response LogIn(LogInUser logInUser)
+        #region httpmethod
+
+        public LoginResponse LogIn(LogInUser logInUser)
         {
             Uzytkownicy user;
             using(PP_testEntities context = new PP_testEntities())
@@ -22,7 +24,7 @@ namespace AuthWebApi.Services
                     select u).FirstOrDefault();
             }
             if (user == null)
-                return new Response() { Result = "Failed", Reason = "Bad email or password"};
+                return new LoginResponse() { Result = "Failed", Reason = "Bad email or password"};
 
             var time = DateTime.Now;
             string str = time.ToString("yyyyMMddHHmmssfffffff") + logInUser.Email + logInUser.UserAgent;
@@ -35,7 +37,7 @@ namespace AuthWebApi.Services
             }
             var token = sBuilder.ToString();
             sessions.Add(token,logInUser.Email);
-            return new Response() { Result = token };
+            return new LoginResponse() { Token = token, Result = "OK"};
         }
 
         public Response LogOut(LogOutUser logOutUser)
@@ -63,5 +65,21 @@ namespace AuthWebApi.Services
             }
             return new Response() { Result = "OK" };
         }
+        #endregion
+
+        #region Session
+
+        public static bool IsTokenExist(string token)
+        {
+            return sessions.ContainsKey(token);
+        }
+
+        public static string GetLogin(string token)
+        {
+            return sessions[token];
+        }
+        
+
+        #endregion
     }
 }

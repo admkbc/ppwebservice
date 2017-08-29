@@ -23,18 +23,7 @@ namespace AuthWebApi
         public System.Guid id_przejazdu { get; set; }
         public long id_uzytk { get; set; }
         public System.DateTime data_przejazdu { get; set; }
-        public byte[] akcelerometr { get; set; }
-        public int akc_il_pomiarow { get; set; }
-        public byte[] zyroskop { get; set; }
-        public int zyro_il_pomiarow { get; set; }
-        public byte[] gps { get; set; }
-        public int gps_il_pomiarow { get; set; }
-        public byte[] magnetometr { get; set; }
-        public int magn_il_pomiarow { get; set; }
-        public byte[] czujnik1 { get; set; }
-        public int cz1_il_pomiarow { get; set; }
-        public byte[] czujnik2 { get; set; }
-        public int cz2_il_pomiarow { get; set; }
+        public byte[] dane_przejazdu { get; set; }
         public Nullable<long> id_pojazdu { get; set; }
     
         public virtual Pojazdy Pojazdy { get; set; }

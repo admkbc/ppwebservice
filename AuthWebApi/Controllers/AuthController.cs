@@ -22,10 +22,10 @@ namespace AuthWebApi.Controllers
 
         [Route("auth")]
         [HttpPost]
-        public Response LogIn(LogInUser logInUser)
+        public LoginResponse LogIn(LogInUser logInUser)
         {
-            return authRepository.LogIn(logInUser);
-        }
+           return authRepository.LogIn(logInUser);
+        } 
 
         [Route("auth")]
         [HttpPatch]

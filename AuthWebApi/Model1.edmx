@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="PP_testModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="PP_testModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Pojazdy">
           <Key>
             <PropertyRef Name="id_pojazdu" />
@@ -20,18 +20,7 @@
           <Property Name="id_przejazdu" Type="uniqueidentifier" Nullable="false" />
           <Property Name="id_uzytk" Type="bigint" Nullable="false" />
           <Property Name="data_przejazdu" Type="datetime2" Precision="7" Nullable="false" />
-          <Property Name="akcelerometr" Type="varbinary(max)" />
-          <Property Name="akc_il_pomiarow" Type="int" Nullable="false" />
-          <Property Name="zyroskop" Type="varbinary(max)" />
-          <Property Name="zyro_il_pomiarow" Type="int" Nullable="false" />
-          <Property Name="gps" Type="varbinary(max)" />
-          <Property Name="gps_il_pomiarow" Type="int" Nullable="false" />
-          <Property Name="magnetometr" Type="varbinary(max)" />
-          <Property Name="magn_il_pomiarow" Type="int" Nullable="false" />
-          <Property Name="czujnik1" Type="varbinary(max)" />
-          <Property Name="cz1_il_pomiarow" Type="int" Nullable="false" />
-          <Property Name="czujnik2" Type="varbinary(max)" />
-          <Property Name="cz2_il_pomiarow" Type="int" Nullable="false" />
+          <Property Name="dane_przejazdu" Type="varbinary(max)" />
           <Property Name="id_pojazdu" Type="bigint" />
         </EntityType>
         <!--Errors Found During Generation:
@@ -157,20 +146,41 @@ warning 6002: The table/view 'PP_test.dbo.Przydzialy' does not have a primary ke
             <End Role="Tagi" EntitySet="Tagi" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="PP_testModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="PP_testEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Pojazdies" EntityType="PP_testModel.Pojazdy" />
+          <EntitySet Name="Przejazdy_fs" EntityType="PP_testModel.Przejazdy_fs" />
+          <EntitySet Name="Tagis" EntityType="PP_testModel.Tagi" />
+          <EntitySet Name="Uzytkownicies" EntityType="PP_testModel.Uzytkownicy" />
+          <AssociationSet Name="FK_Przejazdy_Pojazdy" Association="PP_testModel.FK_Przejazdy_Pojazdy">
+            <End Role="Pojazdy" EntitySet="Pojazdies" />
+            <End Role="Przejazdy_fs" EntitySet="Przejazdy_fs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Przejazdy_Uzytkownicy" Association="PP_testModel.FK_Przejazdy_Uzytkownicy">
+            <End Role="Uzytkownicy" EntitySet="Uzytkownicies" />
+            <End Role="Przejazdy_fs" EntitySet="Przejazdy_fs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tagi_Przejazdy" Association="PP_testModel.FK_Tagi_Przejazdy">
+            <End Role="Przejazdy_fs" EntitySet="Przejazdy_fs" />
+            <End Role="Tagi" EntitySet="Tagis" />
+          </AssociationSet>
+          <AssociationSet Name="Przydzialy" Association="PP_testModel.Przydzialy">
+            <End Role="Pojazdy" EntitySet="Pojazdies" />
+            <End Role="Uzytkownicy" EntitySet="Uzytkownicies" />
+          </AssociationSet>
+        </EntityContainer>
         <EntityType Name="Pojazdy">
           <Key>
             <PropertyRef Name="id_pojazdu" />
           </Key>
           <Property Name="id_pojazdu" Type="Int64" Nullable="false" />
-          <Property Name="nazwa_pojazdu" Type="String" MaxLength="40" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="marka" Type="String" MaxLength="40" FixedLength="false" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="Przejazdy_fs" Relationship="Self.FK_Przejazdy_Pojazdy" FromRole="Pojazdy" ToRole="Przejazdy_fs" />
-          <NavigationProperty Name="Uzytkownicies" Relationship="Self.Przydzialy" FromRole="Pojazdy" ToRole="Uzytkownicy" />
+          <Property Name="nazwa_pojazdu" Type="String" Nullable="false" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="marka" Type="String" Nullable="false" MaxLength="40" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Przejazdy_fs" Relationship="PP_testModel.FK_Przejazdy_Pojazdy" FromRole="Pojazdy" ToRole="Przejazdy_fs" />
+          <NavigationProperty Name="Uzytkownicies" Relationship="PP_testModel.Przydzialy" FromRole="Pojazdy" ToRole="Uzytkownicy" />
         </EntityType>
         <EntityType Name="Przejazdy_fs">
           <Key>
@@ -179,22 +189,11 @@ warning 6002: The table/view 'PP_test.dbo.Przydzialy' does not have a primary ke
           <Property Name="id_przejazdu" Type="Guid" Nullable="false" />
           <Property Name="id_uzytk" Type="Int64" Nullable="false" />
           <Property Name="data_przejazdu" Type="DateTime" Nullable="false" Precision="7" />
-          <Property Name="akcelerometr" Type="Binary" MaxLength="Max" FixedLength="false" />
-          <Property Name="akc_il_pomiarow" Type="Int32" Nullable="false" />
-          <Property Name="zyroskop" Type="Binary" MaxLength="Max" FixedLength="false" />
-          <Property Name="zyro_il_pomiarow" Type="Int32" Nullable="false" />
-          <Property Name="gps" Type="Binary" MaxLength="Max" FixedLength="false" />
-          <Property Name="gps_il_pomiarow" Type="Int32" Nullable="false" />
-          <Property Name="magnetometr" Type="Binary" MaxLength="Max" FixedLength="false" />
-          <Property Name="magn_il_pomiarow" Type="Int32" Nullable="false" />
-          <Property Name="czujnik1" Type="Binary" MaxLength="Max" FixedLength="false" />
-          <Property Name="cz1_il_pomiarow" Type="Int32" Nullable="false" />
-          <Property Name="czujnik2" Type="Binary" MaxLength="Max" FixedLength="false" />
-          <Property Name="cz2_il_pomiarow" Type="Int32" Nullable="false" />
+          <Property Name="dane_przejazdu" Type="Binary" MaxLength="Max" FixedLength="false" />
           <Property Name="id_pojazdu" Type="Int64" />
-          <NavigationProperty Name="Pojazdy" Relationship="Self.FK_Przejazdy_Pojazdy" FromRole="Przejazdy_fs" ToRole="Pojazdy" />
-          <NavigationProperty Name="Uzytkownicy" Relationship="Self.FK_Przejazdy_Uzytkownicy" FromRole="Przejazdy_fs" ToRole="Uzytkownicy" />
-          <NavigationProperty Name="Tagis" Relationship="Self.FK_Tagi_Przejazdy" FromRole="Przejazdy_fs" ToRole="Tagi" />
+          <NavigationProperty Name="Pojazdy" Relationship="PP_testModel.FK_Przejazdy_Pojazdy" FromRole="Przejazdy_fs" ToRole="Pojazdy" />
+          <NavigationProperty Name="Uzytkownicy" Relationship="PP_testModel.FK_Przejazdy_Uzytkownicy" FromRole="Przejazdy_fs" ToRole="Uzytkownicy" />
+          <NavigationProperty Name="Tagis" Relationship="PP_testModel.FK_Tagi_Przejazdy" FromRole="Przejazdy_fs" ToRole="Tagi" />
         </EntityType>
         <EntityType Name="Tagi">
           <Key>
@@ -202,27 +201,27 @@ warning 6002: The table/view 'PP_test.dbo.Przydzialy' does not have a primary ke
           </Key>
           <Property Name="id_tagu" Type="Int64" Nullable="false" />
           <Property Name="id_przejazdu" Type="Guid" Nullable="false" />
-          <Property Name="skrot" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="skrot" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
           <Property Name="komentarz" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Przejazdy_fs" Relationship="Self.FK_Tagi_Przejazdy" FromRole="Tagi" ToRole="Przejazdy_fs" />
+          <NavigationProperty Name="Przejazdy_fs" Relationship="PP_testModel.FK_Tagi_Przejazdy" FromRole="Tagi" ToRole="Przejazdy_fs" />
         </EntityType>
         <EntityType Name="Uzytkownicy">
           <Key>
             <PropertyRef Name="id_uzytk" />
           </Key>
           <Property Name="id_uzytk" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="nazwa_uzytk" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="email" Type="String" MaxLength="40" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="nazwa_uzytk" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="email" Type="String" Nullable="false" MaxLength="40" FixedLength="false" Unicode="false" />
           <Property Name="imie" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="nazwisko" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
-          <Property Name="haslo" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="haslo" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="administrator" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="Przejazdy_fs" Relationship="Self.FK_Przejazdy_Uzytkownicy" FromRole="Uzytkownicy" ToRole="Przejazdy_fs" />
-          <NavigationProperty Name="Pojazdies" Relationship="Self.Przydzialy" FromRole="Uzytkownicy" ToRole="Pojazdy" />
+          <NavigationProperty Name="Przejazdy_fs" Relationship="PP_testModel.FK_Przejazdy_Uzytkownicy" FromRole="Uzytkownicy" ToRole="Przejazdy_fs" />
+          <NavigationProperty Name="Pojazdies" Relationship="PP_testModel.Przydzialy" FromRole="Uzytkownicy" ToRole="Pojazdy" />
         </EntityType>
         <Association Name="FK_Przejazdy_Pojazdy">
-          <End Role="Pojazdy" Type="Self.Pojazdy" Multiplicity="0..1" />
-          <End Role="Przejazdy_fs" Type="Self.Przejazdy_fs" Multiplicity="*" />
+          <End Type="PP_testModel.Pojazdy" Role="Pojazdy" Multiplicity="0..1" />
+          <End Type="PP_testModel.Przejazdy_fs" Role="Przejazdy_fs" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Pojazdy">
               <PropertyRef Name="id_pojazdu" />
@@ -233,8 +232,8 @@ warning 6002: The table/view 'PP_test.dbo.Przydzialy' does not have a primary ke
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Przejazdy_Uzytkownicy">
-          <End Role="Uzytkownicy" Type="Self.Uzytkownicy" Multiplicity="1" />
-          <End Role="Przejazdy_fs" Type="Self.Przejazdy_fs" Multiplicity="*" />
+          <End Type="PP_testModel.Uzytkownicy" Role="Uzytkownicy" Multiplicity="1" />
+          <End Type="PP_testModel.Przejazdy_fs" Role="Przejazdy_fs" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Uzytkownicy">
               <PropertyRef Name="id_uzytk" />
@@ -245,8 +244,8 @@ warning 6002: The table/view 'PP_test.dbo.Przydzialy' does not have a primary ke
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Tagi_Przejazdy">
-          <End Role="Przejazdy_fs" Type="Self.Przejazdy_fs" Multiplicity="1" />
-          <End Role="Tagi" Type="Self.Tagi" Multiplicity="*" />
+          <End Type="PP_testModel.Przejazdy_fs" Role="Przejazdy_fs" Multiplicity="1" />
+          <End Type="PP_testModel.Tagi" Role="Tagi" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Przejazdy_fs">
               <PropertyRef Name="id_przejazdu" />
@@ -257,31 +256,9 @@ warning 6002: The table/view 'PP_test.dbo.Przydzialy' does not have a primary ke
           </ReferentialConstraint>
         </Association>
         <Association Name="Przydzialy">
-          <End Role="Pojazdy" Type="Self.Pojazdy" Multiplicity="*" />
-          <End Role="Uzytkownicy" Type="Self.Uzytkownicy" Multiplicity="*" />
+          <End Type="PP_testModel.Pojazdy" Role="Pojazdy" Multiplicity="*" />
+          <End Type="PP_testModel.Uzytkownicy" Role="Uzytkownicy" Multiplicity="*" />
         </Association>
-        <EntityContainer Name="PP_testEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Pojazdies" EntityType="Self.Pojazdy" />
-          <EntitySet Name="Przejazdy_fs" EntityType="Self.Przejazdy_fs" />
-          <EntitySet Name="Tagis" EntityType="Self.Tagi" />
-          <EntitySet Name="Uzytkownicies" EntityType="Self.Uzytkownicy" />
-          <AssociationSet Name="FK_Przejazdy_Pojazdy" Association="Self.FK_Przejazdy_Pojazdy">
-            <End Role="Pojazdy" EntitySet="Pojazdies" />
-            <End Role="Przejazdy_fs" EntitySet="Przejazdy_fs" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Przejazdy_Uzytkownicy" Association="Self.FK_Przejazdy_Uzytkownicy">
-            <End Role="Uzytkownicy" EntitySet="Uzytkownicies" />
-            <End Role="Przejazdy_fs" EntitySet="Przejazdy_fs" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Tagi_Przejazdy" Association="Self.FK_Tagi_Przejazdy">
-            <End Role="Przejazdy_fs" EntitySet="Przejazdy_fs" />
-            <End Role="Tagi" EntitySet="Tagis" />
-          </AssociationSet>
-          <AssociationSet Name="Przydzialy" Association="Self.Przydzialy">
-            <End Role="Pojazdy" EntitySet="Pojazdies" />
-            <End Role="Uzytkownicy" EntitySet="Uzytkownicies" />
-          </AssociationSet>
-        </EntityContainer>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -291,63 +268,52 @@ warning 6002: The table/view 'PP_test.dbo.Przydzialy' does not have a primary ke
           <EntitySetMapping Name="Pojazdies">
             <EntityTypeMapping TypeName="PP_testModel.Pojazdy">
               <MappingFragment StoreEntitySet="Pojazdy">
-                <ScalarProperty Name="id_pojazdu" ColumnName="id_pojazdu" />
-                <ScalarProperty Name="nazwa_pojazdu" ColumnName="nazwa_pojazdu" />
                 <ScalarProperty Name="marka" ColumnName="marka" />
+                <ScalarProperty Name="nazwa_pojazdu" ColumnName="nazwa_pojazdu" />
+                <ScalarProperty Name="id_pojazdu" ColumnName="id_pojazdu" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Przejazdy_fs">
             <EntityTypeMapping TypeName="PP_testModel.Przejazdy_fs">
               <MappingFragment StoreEntitySet="Przejazdy_fs">
-                <ScalarProperty Name="id_przejazdu" ColumnName="id_przejazdu" />
-                <ScalarProperty Name="id_uzytk" ColumnName="id_uzytk" />
-                <ScalarProperty Name="data_przejazdu" ColumnName="data_przejazdu" />
-                <ScalarProperty Name="akcelerometr" ColumnName="akcelerometr" />
-                <ScalarProperty Name="akc_il_pomiarow" ColumnName="akc_il_pomiarow" />
-                <ScalarProperty Name="zyroskop" ColumnName="zyroskop" />
-                <ScalarProperty Name="zyro_il_pomiarow" ColumnName="zyro_il_pomiarow" />
-                <ScalarProperty Name="gps" ColumnName="gps" />
-                <ScalarProperty Name="gps_il_pomiarow" ColumnName="gps_il_pomiarow" />
-                <ScalarProperty Name="magnetometr" ColumnName="magnetometr" />
-                <ScalarProperty Name="magn_il_pomiarow" ColumnName="magn_il_pomiarow" />
-                <ScalarProperty Name="czujnik1" ColumnName="czujnik1" />
-                <ScalarProperty Name="cz1_il_pomiarow" ColumnName="cz1_il_pomiarow" />
-                <ScalarProperty Name="czujnik2" ColumnName="czujnik2" />
-                <ScalarProperty Name="cz2_il_pomiarow" ColumnName="cz2_il_pomiarow" />
                 <ScalarProperty Name="id_pojazdu" ColumnName="id_pojazdu" />
+                <ScalarProperty Name="dane_przejazdu" ColumnName="dane_przejazdu" />
+                <ScalarProperty Name="data_przejazdu" ColumnName="data_przejazdu" />
+                <ScalarProperty Name="id_uzytk" ColumnName="id_uzytk" />
+                <ScalarProperty Name="id_przejazdu" ColumnName="id_przejazdu" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Tagis">
             <EntityTypeMapping TypeName="PP_testModel.Tagi">
               <MappingFragment StoreEntitySet="Tagi">
-                <ScalarProperty Name="id_tagu" ColumnName="id_tagu" />
-                <ScalarProperty Name="id_przejazdu" ColumnName="id_przejazdu" />
-                <ScalarProperty Name="skrot" ColumnName="skrot" />
                 <ScalarProperty Name="komentarz" ColumnName="komentarz" />
+                <ScalarProperty Name="skrot" ColumnName="skrot" />
+                <ScalarProperty Name="id_przejazdu" ColumnName="id_przejazdu" />
+                <ScalarProperty Name="id_tagu" ColumnName="id_tagu" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Uzytkownicies">
             <EntityTypeMapping TypeName="PP_testModel.Uzytkownicy">
               <MappingFragment StoreEntitySet="Uzytkownicy">
-                <ScalarProperty Name="id_uzytk" ColumnName="id_uzytk" />
-                <ScalarProperty Name="nazwa_uzytk" ColumnName="nazwa_uzytk" />
-                <ScalarProperty Name="email" ColumnName="email" />
-                <ScalarProperty Name="imie" ColumnName="imie" />
-                <ScalarProperty Name="nazwisko" ColumnName="nazwisko" />
-                <ScalarProperty Name="haslo" ColumnName="haslo" />
                 <ScalarProperty Name="administrator" ColumnName="administrator" />
+                <ScalarProperty Name="haslo" ColumnName="haslo" />
+                <ScalarProperty Name="nazwisko" ColumnName="nazwisko" />
+                <ScalarProperty Name="imie" ColumnName="imie" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="nazwa_uzytk" ColumnName="nazwa_uzytk" />
+                <ScalarProperty Name="id_uzytk" ColumnName="id_uzytk" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <AssociationSetMapping Name="Przydzialy" TypeName="PP_testModel.Przydzialy" StoreEntitySet="Przydzialy">
-            <EndProperty Name="Pojazdy">
-              <ScalarProperty Name="id_pojazdu" ColumnName="id_pojazdu" />
-            </EndProperty>
             <EndProperty Name="Uzytkownicy">
               <ScalarProperty Name="id_uzytk" ColumnName="id_uzytk" />
+            </EndProperty>
+            <EndProperty Name="Pojazdy">
+              <ScalarProperty Name="id_pojazdu" ColumnName="id_pojazdu" />
             </EndProperty>
           </AssociationSetMapping>
         </EntityContainerMapping>

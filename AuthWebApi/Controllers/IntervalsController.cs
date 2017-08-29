@@ -4,17 +4,26 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using Antlr.Runtime.Misc;
 using AuthWebApi.Models;
+using AuthWebApi.Services;
 
 namespace AuthWebApi.Controllers
 {
     public class IntervalsController : ApiController
     {
-        [Route("intervals")]
-        [HttpGet]
-        public IntervalsResponse LogIn()
+        private IntervalsRepository intervalsRepository;
+
+        public IntervalsController()
         {
-            return new IntervalsResponse();
+            intervalsRepository = new IntervalsRepository();
         }
+
+        //[Route("intervals")]
+        //[HttpGet]
+        //public List<Interwaly> GetIntervals(string token)
+        //{
+          // return intervalsRepository.GetAllInterwals();
+        //}
     }
 }
